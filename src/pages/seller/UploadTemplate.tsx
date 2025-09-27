@@ -1,0 +1,610 @@
+
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { Upload } from "lucide-react";
+import { useAuth } from "@/context/auth-context";
+import { BASE_URL } from "@/config";
+// Form validation schema
+const templateFormSchema = z.object({
+  title: z.string().min(5, "Title must be at least 5 characters"),
+  description: z.string().min(20, "Description must be at least 20 characters"),
+  category: z.string().min(1, "Please select a category"),
+  features_description: z.string().min(20, "Description must be at least 20 characters"),
+  //long_description: z.string().min(20, "Description must be at least 20 characters"),
+  price: z.coerce.number().min(0, "Price must be a positive number"),
+  tags: z.string(),
+  thumbnail: z.string().optional(),
+  thumbnail1: z.string().optional(),
+  thumbnail2: z.string().optional(),
+  files: z.string().optional(),
+  licenseType: z.string().min(1, "Please select a license type"),
+});
+
+type TemplateFormValues = z.infer<typeof templateFormSchema>;
+
+const defaultValues: Partial<TemplateFormValues> = {
+  title: "",
+  description: "",
+  category: "",
+  features_description: "",
+  //long_description: "",
+  price: 0,
+  tags: "",
+  licenseType: "standard",
+};
+
+const UploadTemplate = () => {
+  type Category = {
+    name: string;
+    value: string;
+  };
+  const navigate = useNavigate();
+  const { user } = useAuth(); // ✅ Get token and role
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+  const [thumbnailPreview1, setThumbnailPreview1] = useState<string | null>(null);
+  const [thumbnailPreview2, setThumbnailPreview2] = useState<string | null>(null);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [thumbnailFile1, setThumbnailFile1] = useState<File | null>(null);
+  const [thumbnailFile2, setThumbnailFile2] = useState<File | null>(null);
+  const [templateZipFile, setTemplateZipFile] = useState<File | null>(null);
+  const [categoryMap, setCategoryMap] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  
+  
+  const form = useForm<TemplateFormValues>({
+    resolver: zodResolver(templateFormSchema),
+    defaultValues,
+  });
+  useEffect(() => {
+    fetch(`${BASE_URL}/product/categories`)
+      .then((res) => res.json())
+      .then((data: Category[]) => {
+        setCategoryMap(data);
+        if (data.length > 0) {
+          form.setValue("category", data[0].value); // ✅ set 'value', not 'slug'
+        }
+      })
+      .catch((err) => console.error("Error fetching categories:", err));
+  }, []);
+  
+  const onSubmit = async (values: TemplateFormValues) => {
+    if (!user?.token) {
+      toast.error("You must be logged in to upload a product.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("product_name", values.title);
+    formData.append("title", values.title);
+    formData.append("description", values.description);
+    //formData.append("long_description", values.long_description);
+    formData.append("features_description", values.features_description);
+    formData.append("tags", values.tags);
+    formData.append("licenseType", values.licenseType);
+    formData.append("category_name", values.category);
+    formData.append("product_price", values.price.toString());
+    
+    if (thumbnailFile) {
+      formData.append("product_image", thumbnailFile);
+    }
+    if (thumbnailFile1) {
+      formData.append("product_image1", thumbnailFile1);
+    }
+    if (thumbnailFile2) {
+      formData.append("product_image2", thumbnailFile2);
+    }
+
+    if (templateZipFile) {
+      formData.append("template_zip", templateZipFile);
+    }
+
+    try {
+      setLoading(true); // start loader
+      const response = await fetch(`${BASE_URL}/seller/create-product`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.detail || "Upload failed");
+      }
+      setLoading(false); // stop loader
+      toast.success("Product uploaded successfully!");
+      navigate("/seller/templates");
+    } catch (error: any) {
+      toast.error(error.message || "Something went wrong");
+    }
+  };
+
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setThumbnailFile(file);
+    //setThumbnailPreview(null); // Reset preview before loading new image
+
+  
+
+    const reader = new FileReader();
+    reader.onload = () => setThumbnailPreview(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+  const handleThumbnailChange1 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file1 = e.target.files?.[0];
+    if (!file1) return;
+    
+    setThumbnailFile1(file1);
+    //setThumbnailPreview(null); // Reset preview before loading new image
+    
+
+  
+
+    const reader = new FileReader();
+    reader.onload = () => setThumbnailPreview1(reader.result as string);
+    reader.readAsDataURL(file1);
+  };
+  const handleThumbnailChange2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file2 = e.target.files?.[0];
+    if (!file2) return;
+    
+    setThumbnailFile2(file2);
+    //setThumbnailPreview(null); // Reset preview before loading new image
+    
+
+  
+
+    const reader = new FileReader();
+    reader.onload = () => setThumbnailPreview2(reader.result as string);
+    reader.readAsDataURL(file2);
+  };
+  //const [zipFile, setZipFile] = useState<File | null>(null);
+  //const [zipFileName, setZipFileName] = useState<string | null>(null);
+  
+
+
+    const handleZipChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setTemplateZipFile(file);
+      }
+};
+useEffect(() => {
+  const sub = form.watch((values) => {
+    if (values.category !== undefined) {
+      console.log("Watched category value:", values.category);
+    }
+  });
+
+  return () => sub.unsubscribe(); // Clean up on unmount
+}, [form]);
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-3xl font-bold tracking-tight">Upload Template</h2>
+        <p className="text-muted-foreground">
+          Upload a new template to sell on TemplaMarT
+        </p>
+      </div>
+      
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Main Form Fields */}
+            <div className="md:col-span-2 space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Template Information</CardTitle>
+                  <CardDescription>
+                    Provide details about your template
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Template Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g. Modern Dashboard UI Kit" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          Choose a clear, descriptive name for your template
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Describe your template in detail" 
+                            rows={5}
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Include key features, use cases, and what makes your template unique
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+  control={form.control}
+  name="category"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Category</FormLabel>
+      <FormControl>
+        <select {...field} className="border p-2 w-full rounded">
+          <option value="">Select a category</option>
+          {categoryMap.map((cat) => (
+            <option key={cat.value} value={cat.value}>
+              {cat.name}
+            </option>
+          ))}
+        </select>
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
+                    
+                    <FormField
+                      control={form.control}
+                      name="price"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Price ($)</FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number" 
+                              min="0" 
+                              step="0.01" 
+                              placeholder="e.g. 49.99" 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Set to 0 for free templates
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  <FormField
+                    control={form.control}
+                    name="tags"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tags</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="e.g. dashboard, admin, modern (comma separated)"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Add relevant tags to help users find your template
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="licenseType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>License Type</FormLabel>
+                        <Select 
+                          onValueChange={field.onChange} 
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a license type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="standard">Standard License</SelectItem>
+                            <SelectItem value="extended">Extended License</SelectItem>
+                            <SelectItem value="exclusive">Exclusive (70% Revenue)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          Standard: Single end product, Extended: Multiple end products
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                   
+                  <FormField
+                    control={form.control}
+                    name="features_description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Long features Description 250 characters</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder=
+{`ex.
+Lifetime updates,
+6 months technical support,
+Fully responsive design,
+Commercial license,
+Source files included`}
+                               
+                                      rows={5}
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Include key features as list, use cases, and what makes your template unique
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Template Files</CardTitle>
+                  <CardDescription>
+                    Upload your template files
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded-md p-8">
+                    <Upload className="h-10 w-10 text-muted-foreground mb-4" />
+                    <h3 className="font-medium mb-2">Drag and drop your files</h3>
+                    <p className="text-sm text-muted-foreground mb-4 text-center">
+                      Upload a ZIP file containing all template assets
+                    </p>
+                    <Button type="button" variant="outline" onClick={() => document.getElementById("files")?.click()}>
+                      Browse Files
+                    </Button>
+                    <input
+                      type="file"
+                      id="files"
+                      onChange={handleZipChange}
+                      className="hidden"
+                      accept=".zip,.rar,.7zip"
+                    />
+                     {templateZipFile && (
+      <p className="mt-4 text-sm text-green-600 font-medium">
+        ✅ {templateZipFile.name} uploaded
+      </p>
+    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            {/* Sidebar - Thumbnail Upload & Preview */}
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Thumbnail Image 1</CardTitle>
+                  <CardDescription>
+                    Upload a thumbnail for your template
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div
+                      className={`aspect-video border rounded-md overflow-hidden flex items-center justify-center bg-muted ${
+                        !thumbnailPreview ? "border-dashed" : ""
+                      }`}
+                    >
+                      {thumbnailPreview ? (
+                        <img
+                          src={thumbnailPreview}
+                          alt="Thumbnail preview"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="text-center p-4">
+                          <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                          <p className="text-sm text-muted-foreground">
+                            No thumbnail uploaded
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <Label htmlFor="thumbnail">Upload Thumbnail</Label>
+                      <Input
+                        id="thumbnail"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleThumbnailChange}
+                        className="mt-1"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Recommended size: 1280×720px, JPG or PNG
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Thumbnail Image 2</CardTitle>
+                  <CardDescription>
+                    Upload a thumbnail for your template
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div
+                      className={`aspect-video border rounded-md overflow-hidden flex items-center justify-center bg-muted ${
+                        !thumbnailPreview1 ? "border-dashed" : ""
+                      }`}
+                    >
+                      {thumbnailPreview1 ? (
+                        <img
+                          src={thumbnailPreview1}
+                          alt="Thumbnail preview"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="text-center p-4">
+                          <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                          <p className="text-sm text-muted-foreground">
+                            No thumbnail uploaded
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <Label htmlFor="thumbnail1">Upload Thumbnail</Label>
+                      <Input
+                        id="thumbnail1"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleThumbnailChange1}
+                        className="mt-1"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Recommended size: 1280×720px, JPG or PNG
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Thumbnail Image 3</CardTitle>
+                  <CardDescription>
+                    Upload a thumbnail for your template
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div
+                      className={`aspect-video border rounded-md overflow-hidden flex items-center justify-center bg-muted ${
+                        !thumbnailPreview2 ? "border-dashed" : ""
+                      }`}
+                    >
+                      {thumbnailPreview2 ? (
+                        <img
+                          src={thumbnailPreview2}
+                          alt="Thumbnail preview"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="text-center p-4">
+                          <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                          <p className="text-sm text-muted-foreground">
+                            No thumbnail uploaded
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <Label htmlFor="thumbnail2">Upload Thumbnail</Label>
+                      <Input
+                        id="thumbnail2"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleThumbnailChange2}
+                        className="mt-1"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Recommended size: 1280×720px, JPG or PNG
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Submission Guidelines</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 text-sm">
+                    <li>• All templates must be original work</li>
+                    <li>• Include documentation with your template</li>
+                    <li>• Ensure your code is clean and well-organized</li>
+                    <li>• Templates are reviewed for quality and uniqueness</li>
+                    <li>• Review process typically takes 2-5 business days</li>
+                  </ul>
+                </CardContent>
+              </Card>
+              
+             
+            </div>
+          </div>
+          
+          <div className="flex gap-2 justify-end">
+            <Button type="button" variant="outline" onClick={() => navigate("/seller/templates")}>
+              Cancel
+            </Button>
+           
+            <Button type="submit" disabled={loading}>
+    {loading ? "Submitting..." : "Submit for Review"}
+  </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
+  );
+};
+
+export default UploadTemplate;
