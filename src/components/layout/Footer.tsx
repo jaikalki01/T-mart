@@ -14,11 +14,10 @@ const Footer = () => {
               The marketplace for high-quality templates and digital assets for professionals.
             </p>
             <p className="text-sm text-muted-foreground">
-            Sh N B1/A Grd Flr Mahavir,<br/> Ngr,
-
-              Deepak Hospital, Mira Road,<br/> Thane,
-
-              Maharashtra - 401107
+           B1/A, Ground Floor, Anand India Business Hub,
+Behind Shree Mahalaxmi Hospital,<br/>
+Deepak Hospital Road, Mira Road East,<br/>
+Thane – 401107.
             </p>
             <p className="text-sm text-muted-foreground">
               Phone: +91 91 369 14 963<br />
