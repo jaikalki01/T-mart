@@ -47,7 +47,7 @@ const Navbar = () => {
   const { isAuthenticated, currentUser, logout } = useAuth();
 
 useEffect(() => {
-  fetch(`${BASE_URL}/product/categories/navbar/`)
+  fetch(`${BASE_URL}/product/categories/navbar`)
     .then((res) => res.json())
     .then((data) => setCategoryMap(data))
     .catch((err) => console.error("Error fetching categories:", err));
