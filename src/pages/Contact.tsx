@@ -28,11 +28,16 @@ const Contact = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const target = e.target;
     const name = target.name;
-    const value = target.type === "checkbox" ? (target as HTMLInputElement).checked : target.value;
+    const value =
+      target.type === "checkbox"
+        ? (target as HTMLInputElement).checked
+        : target.value;
     setFormData({ ...formData, [name]: value });
   };
 
@@ -79,6 +84,14 @@ const Contact = () => {
     }
   };
 
+  // ✅ Form validation check
+  const isFormValid =
+    formData.name.trim() !== "" &&
+    formData.email.trim() !== "" &&
+    formData.category.trim() !== "" &&
+    formData.message.trim() !== "" &&
+    formData.agreeToTerms;
+
   return (
     <>
       {/* SEO */}
@@ -94,7 +107,6 @@ const Contact = () => {
       {/* Banner */}
       <div className="relative bg-gradient-to-r from-brand-700 to-[#F72C5B] text-white py-16 px-6 text-center shadow-lg mb-10">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
-
       </div>
 
       {/* Content */}
@@ -105,16 +117,29 @@ const Contact = () => {
             <div>
               <h2 className="text-xl font-semibold mb-1">Address</h2>
               <p>
-                B1/A, Ground Floor, Anand India Business Hub,<br/> Behind Shree Mahalaxmi Hospital,<br/> Deepak Hospital Road, Mira Road East,<br/> Thane – 401107.
+                B1/A, Ground Floor, Anand India Business Hub,
+                <br /> Behind Shree Mahalaxmi Hospital,
+                <br /> Deepak Hospital Road, Mira Road East,
+                <br /> Thane – 401107.
               </p>
             </div>
             <div>
               <h2 className="text-xl font-semibold mb-1">Phone</h2>
               <p>
-                <a href="tel:9136914963" className="text-blue-600 hover:underline">+91 91 369 14 963</a>
+                <a
+                  href="tel:9136914963"
+                  className="text-blue-600 hover:underline"
+                >
+                  +91 91 369 14 963
+                </a>
               </p>
               <p>
-                <a href="tel:2235039927" className="text-blue-600 hover:underline">+91 22 350 399 27</a>
+                <a
+                  href="tel:2235039927"
+                  className="text-blue-600 hover:underline"
+                >
+                  +91 22 350 399 27
+                </a>
               </p>
             </div>
             <div>
@@ -124,12 +149,18 @@ const Contact = () => {
           </div>
 
           {/* Contact Form */}
-          <div className="bg-white shadow-lg rounded-xl p-6 w-full md:w-auto w-[100%] md:w-[100%]">
-            <h2 className="text-2xl font-semibold mb-4 text-center md:text-left">Contact Our Support Team</h2>
+          <div className="bg-white shadow-lg rounded-xl p-6 w-full md:w-auto md:w-[100%]">
+            <h2 className="text-2xl font-semibold mb-4 text-center md:text-left">
+              Contact Our Support Team
+            </h2>
 
             {/* Success / Error messages */}
-            {successMessage && <p className="text-green-600 mb-2">{successMessage}</p>}
-            {errorMessage && <p className="text-red-600 mb-2">{errorMessage}</p>}
+            {successMessage && (
+              <p className="text-green-600 mb-2">{successMessage}</p>
+            )}
+            {errorMessage && (
+              <p className="text-red-600 mb-2">{errorMessage}</p>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <input
@@ -195,24 +226,42 @@ const Contact = () => {
                   name="agreeToTerms"
                   checked={formData.agreeToTerms}
                   onCheckedChange={(checked) =>
-                    setFormData((prev) => ({ ...prev, agreeToTerms: Boolean(checked) }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      agreeToTerms: Boolean(checked),
+                    }))
                   }
                 />
                 <label htmlFor="terms" className="text-sm font-medium">
-                  I agree to get updates, offers & promos via SMS, RCS & WhatsApp.
+                  I agree to get updates, offers & promos via SMS, RCS &
+                  WhatsApp.
                 </label>
               </div>
 
               <div className="flex flex-wrap gap-2 text-sm">
-                <a href="/terms-condition" className="text-blue-600 hover:underline">T & C</a> |{" "}
-                <a href="/privacy-policy" className="text-blue-600 hover:underline">Privacy Policy</a>
+                <a
+                  href="/terms"
+                  className="text-blue-600 hover:underline"
+                >
+                  T & C
+                </a>{" "}
+                |{" "}
+                <a
+                  href="/privacy"
+                  className="text-blue-600 hover:underline"
+                >
+                  Privacy Policy
+                </a>
               </div>
 
+              {/* ✅ Disabled until form valid */}
               <button
                 type="submit"
-                disabled={loading}
-                className={`w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition ${
-                  loading ? "opacity-70 cursor-not-allowed" : ""
+                disabled={!isFormValid || loading}
+                className={`w-full py-2 rounded-lg text-white transition ${
+                  isFormValid && !loading
+                    ? "bg-blue-600 hover:bg-blue-700"
+                    : "bg-gray-400 cursor-not-allowed"
                 }`}
               >
                 {loading ? "Sending..." : "Send Message"}
