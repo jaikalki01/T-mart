@@ -6,7 +6,7 @@ const RefundPolicy = () => {
         
         <h2 className="text-2xl font-semibold mt-4 mb-4">1. INTRODUCTION</h2>
         <p className="mb-4 text-muted-foreground">
-        <a href="Tmart.com" className="text-blue-600">tmart.com</a> ("Website"), owned and operated by Paramvasu Technology Private Limited
+        <a href="Tmart.com" className="text-blue-600">tmart.com</a> ("Website"), owned and operated by Paramvasu Technologies Pvt. Ltd.
           ("Company", "We", "Us"), provides digital products. Due to the nature of these products, all
           sales are final, except under the conditions specified in this Return and Refund Policy.
         </p>
@@ -49,7 +49,7 @@ For assistance, please contact us at info@tmart.com.
         <h2 className="text-2xl font-semibold mt-4 mb-4">6. CONTACT INFORMATION</h2>
         <p className="mb-4 text-muted-foreground">For any refund or return inquiries, please contact:</p>
         <ul className="list-disc ml-6 mb-4 text-muted-foreground">
-          <li><strong>Paramvasu Technology Private Limited</strong></li>
+          <li><strong>Paramvasu Technologies Pvt. Ltd.</strong></li>
           <li>Address: Sh N B1/A Grd Flr Mahavir Ngr, Deepak Hospital, Mira Road, Thane, Maharashtra, 401107</li>
           <li>Email: <a href="mailto:info@paramvasu.com" className="text-blue-600">info@paramvasu.com</a></li>
         </ul>

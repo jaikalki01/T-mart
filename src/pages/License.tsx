@@ -41,7 +41,7 @@ const LicenseAgreement = () => {
 
             <h2 className="text-2xl font-semibold mt-4 mb-4">4. OWNERSHIP & INTELLECTUAL PROPERTY</h2>
             <ul className="ml-6 mb-4 text-muted-foreground">
-                <li><b>4.1 Retention of Rights:</b> All Templates are the property of Paramvasu Technology Private Limited or its licensors. This Agreement grants a license to use but does not transfer ownership of the Template.</li>
+                <li><b>4.1 Retention of Rights:</b> All Templates are the property of Paramvasu Technologies Pvt. Ltd. or its licensors. This Agreement grants a license to use but does not transfer ownership of the Template.</li>
                 <li><b>4.2 Intellectual Property Protection:</b> Licensee shall not remove, alter, or obscure any proprietary notices or attributions included in the Template.</li>
             </ul>
 

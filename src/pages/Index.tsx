@@ -32,7 +32,7 @@ const Index = () => {
       })
       axios.get(`${BASE_URL}/product/categories-with-count`)
       .then(response => {
-        setCategories(response.data);
+        setCategories(response.data);  
       })
       axios.get(`${BASE_URL}/product/templates-random`)
       .then(response => {

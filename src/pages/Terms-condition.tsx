@@ -8,8 +8,7 @@ const Terms = () => {
         
         <h2 className="text-2xl font-semibold mt-4 mb-4">1. INTRODUCTION</h2>
         <p className="mb-4 text-muted-foreground">
-          Welcome to <a href="Tmart.com" className="text-blue-600">tmart.com</a> ("Website"), owned and operated by Paramvasu Technology
-          Private Limited ("Company", "We", "Us"). These Terms and Conditions ("Terms") govern
+          Welcome to <a href="Tmart.com" className="text-blue-600">tmart.com</a> ("Website"), owned and operated by Paramvasu Technologies Pvt. Ltd. ("Company", "We", "Us"). These Terms and Conditions ("Terms") govern
           your access and use of the Website and its products and services. By using T-mart.com,
           you agree to these Terms. If you do not agree, please discontinue use immediately.
         </p>
@@ -59,7 +58,7 @@ const Terms = () => {
           For any questions or concerns regarding these Terms, please contact:
         </p>
         <ul className="list-disc ml-6 mb-4 text-muted-foreground">
-          <li><strong>Paramvasu Technology Private Limited</strong></li>
+          <li><strong>Paramvasu Technologies Pvt. Ltd.</strong></li>
           <li>Address: Sh N B1/A Grd Flr Mahavir Ngr, Deepak Hospital, Mira Road, Thane, Maharashtra, 401107</li>
           <li>Email: <a href="mailto:info@paramvasu.com" className="text-blue-600">info@paramvasu.com</a></li>
         </ul>

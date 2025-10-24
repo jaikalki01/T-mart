@@ -13,15 +13,16 @@ const Footer = () => {
             <p className="text-sm text-muted-foreground">
               The marketplace for high-quality templates and digital assets for professionals.
             </p>
+            <p>Corporate Add:</p>
             <p className="text-sm text-muted-foreground">
-           B1/A, Ground Floor, Anand India Business Hub,
-Behind Shree Mahalaxmi Hospital,<br/>
-Deepak Hospital Road, Mira Road East,<br/>
-Thane – 401107.
+              B1/A, Ground Floor, Anand India Business Hub,
+              Behind Shree Mahalaxmi Hospital,<br />
+              Deepak Hospital Road, Mira Road East,<br />
+              Thane – 401107.
             </p>
             <p className="text-sm text-muted-foreground">
               Phone: +91 91 369 14 963<br />
-              Landline: +91 22 350 399 27<br/>
+              Landline: +91 22 350 399 27<br />
               Email: info@tmart.com
             </p>
           </div>
@@ -65,17 +66,17 @@ Thane – 401107.
               </li>
               <li>
                 <Link to="/category/ecommerce-templates" className="text-sm text-muted-foreground hover:text-foreground">
-                Ecommerce Templates
+                  Ecommerce Templates
                 </Link>
               </li>
               <li>
                 <Link to="/category/cms-templates" className="text-sm text-muted-foreground hover:text-foreground">
-                CMS Templates
+                  CMS Templates
                 </Link>
               </li>
               <li>
                 <Link to="/category/business-assets" className="text-sm text-muted-foreground hover:text-foreground">
-                Business Assets
+                  Business Assets
                 </Link>
               </li>
             </ul>
@@ -109,11 +110,17 @@ Thane – 401107.
                 </Link>
               </li>
             </ul>
+            <p>Regd. Add:</p>
+            <p className="text-sm text-muted-foreground">
+              SH N B1/A, H N 01, Ground, Mahavir Nagar,
+              Deepak Hos, Mira Road,<br />
+              Thane, Maharashtra- 401107
+            </p>
           </div>
         </div>
         <div className="mt-8 border-t pt-8">
-          <p className="text-center text-sm text-muted-foreground"><a href="https://paramvasu.com/" className="text-[#F72C5B]" target="_blank">Paramvasu</a>&nbsp;
-            © {new Date().getFullYear()} T-mart. All rights reserved. Distributed by <a href="https://templamart.com/" className="text-[#F72C5B]" target="_blank">Templamart.</a>
+          <p className="text-center text-sm text-muted-foreground">
+            © {new Date().getFullYear()}. All rights reserved. Paramvasu Technologies Pvt. Ltd. Distributed by <a href="https://templamart.com/" className="text-[#F72C5B]" target="_blank">Templamart.</a>
           </p>
         </div>
       </div>

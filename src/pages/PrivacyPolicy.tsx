@@ -6,7 +6,7 @@ const PrivacyPolicy = () => {
         
         <h2 className="text-2xl font-semibold mt-4 mb-4">1. INTRODUCTION</h2>
         <p className="mb-4 text-muted-foreground">
-          Tmart.com ("Website"), owned and operated by Paramvasu Technology Private Limited
+          Tmart.com ("Website"), owned and operated by Paramvasu Technologies Pvt. Ltd.
           ("Company", "We", "Us"), is committed to protecting your privacy. This Privacy Policy
           explains how we collect, use, and protect your personal data when you use our Website.
         </p>
@@ -58,7 +58,7 @@ const PrivacyPolicy = () => {
         <h2 className="text-2xl font-semibold mt-4 mb-4">9. CONTACT INFORMATION</h2>
         <p className="mb-4 text-muted-foreground">For any privacy concerns or data requests, please contact:</p>
         <ul className="list-disc ml-6 mb-4 text-muted-foreground">
-          <li><strong>Paramvasu Technology Private Limited</strong></li>
+          <li><strong>Paramvasu Technologies Pvt. Ltd.</strong></li>
           <li>Address: Sh N B1/A Grd Flr Mahavir Ngr, Deepak Hospital, Mira Road, Thane, Maharashtra, 401107</li>
           <li>Email: <a href="mailto:info@paramvasu.com" className="text-blue-600">info@paramvasu.com</a></li>
         </ul>
